@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 
-import { instance } from './apis/instance'
 import useDebounce from './hooks/useDebounce'
 
 interface RecentKeywordType {
@@ -20,18 +19,26 @@ function App() {
     setSearchKeyword('')
   }
 
-  const getRecommandKeywordList = (debouncedKeyword: string) => {
-    instance
-      .get(`/sick?q=${debouncedKeyword.trim().toLowerCase()}`)
-      .then((response) => {
-        setSearchedKeywordList(response.data)
-      })
-      .catch((error) => {
-        console.error(error)
-      })
-      .finally(() => {
-        console.info('calling api')
-      })
+  const getRecommandKeywordList = async (debouncedKeyword: string) => {
+    const URL = `http://localhost:4000/sick/?q=${debouncedKeyword.trim().toLowerCase()}`
+    const cacheStorage = await caches.open('search')
+    const reponsedChache = await cacheStorage.match(URL)
+
+    try {
+      if (reponsedChache) {
+        const result = await reponsedChache.clone().json()
+        setSearchedKeywordList(result)
+      } else {
+        fetch(URL).then(async (response) => {
+          console.info('calling api')
+          const result = await response.clone().json()
+          setSearchedKeywordList(result)
+          await cacheStorage.put(URL, response)
+        })
+      }
+    } catch (error) {
+      console.error(error)
+    }
   }
 
   useEffect(() => {
