@@ -1,4 +1,47 @@
+import { useState, useEffect } from 'react'
+
+import { instance } from './apis/instance'
+import useDebounce from './hooks/useDebounce'
+
+interface RecentKeywordType {
+  sickCd: string
+  sickNm: string
+}
+
 function App() {
+  const [searchKeyword, setSearchKeyword] = useState('')
+  const [searchedKeywordList, setSearchedKeywordList] = useState<RecentKeywordType[]>([])
+  const debouncedKeyword = useDebounce(searchKeyword, 250)
+
+  const getInput = (value: string) => {
+    setSearchKeyword(value)
+  }
+  const clearInput = () => {
+    setSearchKeyword('')
+  }
+
+  const getRecommandKeywordList = (debouncedKeyword: string) => {
+    instance
+      .get(`/sick?q=${debouncedKeyword.trim().toLowerCase()}`)
+      .then((response) => {
+        setSearchedKeywordList(response.data)
+      })
+      .catch((error) => {
+        console.error(error)
+      })
+      .finally(() => {
+        console.info('calling api')
+      })
+  }
+
+  useEffect(() => {
+    if (debouncedKeyword == '') {
+      setSearchedKeywordList([])
+    } else {
+      getRecommandKeywordList(debouncedKeyword)
+    }
+  }, [debouncedKeyword])
+
   return (
     <section>
       <h2>검색하기</h2>
@@ -10,24 +53,41 @@ function App() {
 
       <div>
         <form>
-          <input type="text" />
-          <button type="button">검색하기</button>
-
-          <div style={{ display: 'none' }}>
-            <div>
-              <h3>추천 검색어</h3>
-
-              {/* TODO: 1. 검색어가 없을때 */}
-              <div>추천 검색어가 없습니다.</div>
-
-              {/* TODO: 2. 검색어가 있을때 */}
-              <ul>
-                <li>추천검색어1</li>
-                <li>추천검색어2</li>
-              </ul>
-            </div>
+          <div>
+            <input
+              type="text"
+              value={searchKeyword}
+              onInput={(e) => getInput((e.target as HTMLTextAreaElement).value)}
+            />
+            <button type="button" onClick={clearInput}>
+              X
+            </button>
+            <button type="button">검색하기</button>
           </div>
         </form>
+
+        <div>
+          <p>{searchKeyword}</p>
+
+          <section>
+            <h3>추천 검색어</h3>
+            {searchedKeywordList.length !== 0 ? (
+              <ul>
+                {searchedKeywordList.map((keyword: RecentKeywordType) => {
+                  return (
+                    <li key={keyword.sickCd}>
+                      <button type="button" onClick={() => setSearchKeyword(keyword.sickNm)}>
+                        {keyword.sickNm}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            ) : (
+              <div>추천 검색어가 없습니다.</div>
+            )}
+          </section>
+        </div>
       </div>
     </section>
   )
