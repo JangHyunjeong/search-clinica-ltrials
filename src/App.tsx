@@ -1,25 +1,21 @@
 import { useState, useEffect } from 'react'
 
+import { ReconmmendKeywordType } from './components/search/types'
 import useDebounce from './hooks/useDebounce'
 
-interface RecentKeywordType {
-  sickCd: string
-  sickNm: string
-}
-
 function App() {
-  const [searchKeyword, setSearchKeyword] = useState('')
-  const [searchedKeywordList, setSearchedKeywordList] = useState<RecentKeywordType[]>([])
-  const debouncedKeyword = useDebounce(searchKeyword, 250)
+  const [keyword, setKeyword] = useState('')
+  const debouncedKeyword = useDebounce(keyword)
+  const [reconmmendKeywords, setReconmmendKeywords] = useState<ReconmmendKeywordType[]>([])
 
-  const getInput = (value: string) => {
-    setSearchKeyword(value)
+  const getInput = (value: string): void => {
+    setKeyword(value)
   }
-  const clearInput = () => {
-    setSearchKeyword('')
+  const clearInput = (): void => {
+    setKeyword('')
   }
 
-  const getRecommandKeywordList = async (debouncedKeyword: string) => {
+  const getRecommendKeywords = async (debouncedKeyword: string) => {
     const URL = `http://localhost:4000/sick/?q=${debouncedKeyword.trim().toLowerCase()}`
     const cacheStorage = await caches.open('search')
     const reponsedChache = await cacheStorage.match(URL)
@@ -27,26 +23,28 @@ function App() {
     try {
       if (reponsedChache) {
         const result = await reponsedChache.clone().json()
-        setSearchedKeywordList(result)
-      } else {
-        fetch(URL).then(async (response) => {
-          console.info('calling api')
-          const result = await response.clone().json()
-          setSearchedKeywordList(result)
-          await cacheStorage.put(URL, response)
-        })
+        setReconmmendKeywords(result)
+        return
       }
+
+      fetch(URL).then(async (response) => {
+        console.info('calling api')
+        const result = await response.clone().json()
+        setReconmmendKeywords(result)
+        await cacheStorage.put(URL, response)
+      })
     } catch (error) {
       console.error(error)
     }
   }
 
   useEffect(() => {
-    if (debouncedKeyword == '') {
-      setSearchedKeywordList([])
-    } else {
-      getRecommandKeywordList(debouncedKeyword)
+    if (debouncedKeyword === '') {
+      setReconmmendKeywords([])
+      return
     }
+
+    getRecommendKeywords(debouncedKeyword)
   }, [debouncedKeyword])
 
   return (
@@ -63,7 +61,7 @@ function App() {
           <div>
             <input
               type="text"
-              value={searchKeyword}
+              value={keyword}
               onInput={(e) => getInput((e.target as HTMLTextAreaElement).value)}
             />
             <button type="button" onClick={clearInput}>
@@ -74,16 +72,16 @@ function App() {
         </form>
 
         <div>
-          <p>{searchKeyword}</p>
+          <p>{keyword}</p>
 
           <section>
             <h3>추천 검색어</h3>
-            {searchedKeywordList.length !== 0 ? (
+            {reconmmendKeywords.length !== 0 ? (
               <ul>
-                {searchedKeywordList.map((keyword: RecentKeywordType) => {
+                {reconmmendKeywords.map((keyword: ReconmmendKeywordType) => {
                   return (
                     <li key={keyword.sickCd}>
-                      <button type="button" onClick={() => setSearchKeyword(keyword.sickNm)}>
+                      <button type="button" onClick={() => setKeyword(keyword.sickNm)}>
                         {keyword.sickNm}
                       </button>
                     </li>
