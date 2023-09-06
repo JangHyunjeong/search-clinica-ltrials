@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react'
 
 import { ReconmmendKeywordType } from './components/search/types'
 import useDebounce from './hooks/useDebounce'
+import SearchPage from './page/searchPage'
 
 function App() {
-  const [keyword, setKeyword] = useState('')
+  const [keyword, setKeyword] = useState<string>('')
   const debouncedKeyword = useDebounce(keyword)
   const [reconmmendKeywords, setReconmmendKeywords] = useState<ReconmmendKeywordType[]>([])
 
@@ -48,53 +49,13 @@ function App() {
   }, [debouncedKeyword])
 
   return (
-    <section>
-      <h2>검색하기</h2>
-      <p>
-        국내 모든 임상시험 검색하고
-        <br />
-        온라인으로 참여하기
-      </p>
-
-      <div>
-        <form>
-          <div>
-            <input
-              type="text"
-              value={keyword}
-              onInput={(e) => getInput((e.target as HTMLTextAreaElement).value)}
-            />
-            <button type="button" onClick={clearInput}>
-              X
-            </button>
-            <button type="button">검색하기</button>
-          </div>
-        </form>
-
-        <div>
-          <p>{keyword}</p>
-
-          <section>
-            <h3>추천 검색어</h3>
-            {reconmmendKeywords.length !== 0 ? (
-              <ul>
-                {reconmmendKeywords.map((keyword: ReconmmendKeywordType) => {
-                  return (
-                    <li key={keyword.sickCd}>
-                      <button type="button" onClick={() => setKeyword(keyword.sickNm)}>
-                        {keyword.sickNm}
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
-            ) : (
-              <div>추천 검색어가 없습니다.</div>
-            )}
-          </section>
-        </div>
-      </div>
-    </section>
+    <SearchPage
+      clearInput={clearInput}
+      getInput={getInput}
+      keyword={keyword}
+      reconmmendKeywords={reconmmendKeywords}
+      setKeyword={setKeyword}
+    ></SearchPage>
   )
 }
 
