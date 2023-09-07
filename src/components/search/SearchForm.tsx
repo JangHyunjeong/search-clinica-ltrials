@@ -4,11 +4,7 @@ function SearchForm(props: searchFormType) {
   return (
     <form>
       <div>
-        <input
-          type="text"
-          value={props.keyword}
-          onInput={(e) => props.getInput((e.target as HTMLTextAreaElement).value)}
-        />
+        <input type="text" value={props.keyword} onChange={(e) => props.getInput(e.target.value)} />
         <button type="button" onClick={props.clearInput}>
           X
         </button>
