@@ -33,11 +33,25 @@ ${reset},
         font: inherit;
         border: 0;
     }
+    button{
+        cursor: pointer;
+    }
     button:focus, 
     input:focus, 
     textarea:focus, 
     select:focus{
         outline: none;
+    }
+    .visuallyHidden {
+        overflow: hidden;
+        display: inline-block;
+        position: absolute;
+        z-index: -1;
+        border: 0;
+        width: 1px;
+        height: 1px;
+        clip: rect(1px, 1px, 1px, 1px);
+        clip-path: inset(50%);
     }
 `
 

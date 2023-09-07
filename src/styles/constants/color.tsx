@@ -3,6 +3,8 @@ export interface ColorType {
   subTextColor: string
   bgColor: string
   blue: string
+  gray: string
+  lightGray: string
   white: string
 }
 
@@ -11,5 +13,7 @@ export const color: ColorType = {
   subTextColor: '#a7afb7',
   bgColor: '#cae9ff',
   blue: '#007be9',
+  gray: '#dddddd',
+  lightGray: '#efefef',
   white: '#ffffff',
 }
