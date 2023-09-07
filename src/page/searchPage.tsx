@@ -5,6 +5,8 @@ import SearchResult from '../components/search/SearchResult'
 import { ReconmmendKeywordType } from '../components/search/types'
 import useDebounce from '../hooks/useDebounce'
 
+import * as S from '../components/search/Search.styled'
+
 function SearchPage() {
   const [keyword, setKeyword] = useState<string>('')
   const debouncedKeyword = useDebounce(keyword)
@@ -35,7 +37,6 @@ function SearchPage() {
         console.info('calling api')
         const result = await response.clone().json()
         setReconmmendKeywords(result)
-        console.log(response)
         await cacheStorage.put(URL, response)
       })
     } catch (error) {
@@ -53,15 +54,15 @@ function SearchPage() {
   }, [debouncedKeyword])
 
   return (
-    <section>
-      <h2>검색하기</h2>
-      <p>
+    <S.SearchSection>
+      <h2 className="visuallyHidden">검색하기</h2>
+      <S.SearchPara>
         국내 모든 임상시험 검색하고
         <br />
         온라인으로 참여하기
-      </p>
+      </S.SearchPara>
 
-      <div>
+      <S.SearchBoxWrapper>
         <SearchForm clearInput={clearInput} getInput={getInput} keyword={keyword}></SearchForm>
 
         <SearchResult
@@ -69,8 +70,8 @@ function SearchPage() {
           reconmmendKeywords={reconmmendKeywords}
           setKeyword={setKeyword}
         ></SearchResult>
-      </div>
-    </section>
+      </S.SearchBoxWrapper>
+    </S.SearchSection>
   )
 }
 export default SearchPage
