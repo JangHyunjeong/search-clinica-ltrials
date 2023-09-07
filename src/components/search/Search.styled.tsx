@@ -15,7 +15,7 @@ export const SearchPara = styled.p`
   letter-spacing: -0.018em;
   line-height: 1.6;
 `
-export const SearchBoxWrapper = styled.p`
+export const SearchBoxWrapper = styled.div`
   width: 100%;
 `
 export const SearchForm = styled.form`
