@@ -1,14 +1,6 @@
-export interface ReconmmendKeywordType {
+export interface RecommendsType {
   sickCd: string
   sickNm: string
-}
-
-export interface SearchPageType {
-  clearInput: () => void
-  getInput: (vlaue: string) => void
-  keyword: string
-  reconmmendKeywords: ReconmmendKeywordType[]
-  setKeyword: React.Dispatch<React.SetStateAction<string>>
 }
 
 export interface searchFormType {
@@ -17,8 +9,8 @@ export interface searchFormType {
   clearInput: () => void
 }
 
-export interface SearchResultType {
+export interface SearchResultProps {
   keyword: string
   setKeyword: React.Dispatch<React.SetStateAction<string>>
-  reconmmendKeywords: ReconmmendKeywordType[]
+  recommends: RecommendsType[]
 }
