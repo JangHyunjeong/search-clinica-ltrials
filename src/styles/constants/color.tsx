@@ -1,14 +1,4 @@
-export interface ColorType {
-  textColor: string
-  subTextColor: string
-  bgColor: string
-  blue: string
-  gray: string
-  lightGray: string
-  white: string
-}
-
-export const color: ColorType = {
+export const color = {
   textColor: '#000000',
   subTextColor: '#a7afb7',
   bgColor: '#cae9ff',
@@ -16,4 +6,4 @@ export const color: ColorType = {
   gray: '#dddddd',
   lightGray: '#efefef',
   white: '#ffffff',
-}
+} as const

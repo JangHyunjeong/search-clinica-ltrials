@@ -1,11 +1,4 @@
-export interface FlexType {
-  flexCenter: string
-  flexStart: string
-  flexBetweenCenter: string
-  flexColumnCenter: string
-}
-
-export const flex: FlexType = {
+export const flex = {
   flexCenter: `
     display: flex;
     justify-content: center;
@@ -27,4 +20,4 @@ export const flex: FlexType = {
     justify-content: center;
     align-items: center;
   `,
-}
+} as const
