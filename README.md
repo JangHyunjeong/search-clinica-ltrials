@@ -1,7 +1,19 @@
 # Search Clinical Trials
 
 - [한국임상정보](https://clinicaltrialskorea.com/) 의 검색/최근 검색어 기능 구현
-- input 이벤트에 따른 API호출 전략이 포인트
+- input change 이벤트에 따른 API호출 전략이 포인트
+
+## 배포 주소
+
+- [클릭시 배포페이지로 이동합니다](https://search-clinical-trials-sand.vercel.app/)
+
+## 사용 기술
+
+- 언어 : TypeScript
+- 프레임워크 : React.js
+- 통신 : Axios
+- 스타일링 : Styled-components
+- 배포 : Vercel
 
 ## 디렉토리 구조
 
